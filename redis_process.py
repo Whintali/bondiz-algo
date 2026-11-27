@@ -7,7 +7,7 @@ _redis_client = redis.Redis(host='localhost', port=6379, decode_responses=True) 
 
 MAX_POOL_SIZE = 100 # maximum number of results to store in the pool
 
-ALGORITHM_VERSION = "2.0.0"
+ALGORITHM_VERSION = "2.1.0"
 TIME_BEFORE_CONSUMPTION = 3600 # time in seconds before the pool is considered expired
 
 def pool_key(user_id: str) -> str:
