@@ -1,5 +1,5 @@
 import redis
-from models import Result
+from models import Result,Args
 from datetime import datetime
 from zoneinfo import ZoneInfo 
 
@@ -14,7 +14,7 @@ def pool_key(user_id: str) -> str:
     return f"{ALGORITHM_VERSION}:pool:{user_id}"
 
 # TODO add async
-def save_pool(user_id: str, results: list[Result]) -> None:
+def save_pool(user_id: str, results: list[Result], args:Args) -> None:
     key = pool_key(user_id)
     tmp_key = key + ":tmp" # Avoid a not finished pool to be consumed by the user
 
@@ -28,6 +28,10 @@ def save_pool(user_id: str, results: list[Result]) -> None:
                 {"user_id": r.user_id,"hobbies_score":r.stat.hobbies,"desires_score": r.stat.desires, "score": r.stat.total}
                 for r in results[:MAX_POOL_SIZE] 
             ],
+            "weight" : {
+                "hobbies": args.weight_hobbies,
+                "desires":args.weight_jaccard
+            }
             # HERE add info to the json redis output 
         }
         pipeline.json().set(key, "$", payload)
